@@ -1,0 +1,27 @@
+{
+  "name": "lyricsdist",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.33.0",
+    "@typescript-eslint/parser": "^5.33.0",
+    "eslint": "^8.21.0"
+  },
+  "dependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/express": "^4.17.13",
+    "@types/fast-html-parser": "^1.0.2",
+    "@types/node": "^18.7.2",
+    "axios": "^0.27.2",
+    "express": "^4.18.1",
+    "fast-html-parser": "^1.0.1"
+  },
+  "type": "module"
+}

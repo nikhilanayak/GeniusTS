@@ -10,7 +10,7 @@ function writeJSON(fname: string, obj: Record<any, any>): void{
 	writeFileSync(fname, JSON.stringify(obj));
 }
 
-let URL = "http://ur.l/chunk";
+let URL = "http://35.223.91.198:3389/chunk";
 
 
 if(!existsSync("data")){

@@ -12,10 +12,19 @@ app.get("/chunk", (req, res) => {
 	while(lock){continue;}
 	lock = true;
 	res.send("" + offset);
+	console.log(offset);
 	offset += BATCH_SIZE;
 	lock = false;
 });
 
-app.listen(8008, () => {
+app.get("/reset", (req, res) => {
+	while(lock){continue;}
+	lock = true;
+	res.send("");
+	offset = 0;
+	lock = false;
+});
+
+app.listen(4422, () => {
 	console.log("started server");
 });

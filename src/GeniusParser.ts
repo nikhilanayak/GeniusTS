@@ -25,12 +25,12 @@ function processLyricsHTML(HTMLString: string): string{
 }
 
 export async function parseHTML(pageText: string): Promise<Record<string, any>>{
+
 	if(pageText == null) return null;
 
 	const JSON_PREFIX = "window.__PRELOADED_STATE__ =";
 
 	let preloadedData: null | Record<string, any> = null;
-
 
 	pageText.split("\n").every(line => {
 		line = line.trim();
@@ -47,6 +47,8 @@ export async function parseHTML(pageText: string): Promise<Record<string, any>>{
 	//console.log(JSON.stringify(preloadedData, null, 4));
 
 	const KVData = {...mapKVArray(preloadedData?.songPage?.trackingData), ...mapKVArray(preloadedData?.songPage?.dfpKv)};
+
+
 
 	//console.log(JSON.stringify(preloadedData));
 
@@ -82,8 +84,6 @@ export async function parseHTML(pageText: string): Promise<Record<string, any>>{
 			"status": status
 		};
 	}));
-
-
 
 	const out = {
 		lyrics,

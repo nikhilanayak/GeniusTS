@@ -1,12 +1,48 @@
 #!/bin/bash
 tsc
 
-echo starting with $1 threads
+export NODE_NO_WARNINGS=1
 
-for i in $(seq 1 $1);
+THREADS=10240
+CURR=0
+
+while true;
 do
-	echo $i
-	node --es-module-specifier-resolution=node dist/index.js&
-done
+	#echo $CURR
 
-wait
+	start=$((CURR*THREADS))
+	end_=$((CURR*THREADS+THREADS-1))
+
+	mkdir -p /dev/shm/data/$CURR
+
+	start_time=$(date +%s)
+
+	echo started batch
+	for i in $(seq $start $end_)
+	do
+		#echo $i
+		sudo NODE_NO_WARNINGS=1 node --es-module-specifier-resolution=node dist/scrape.js $i > /dev/shm/data/$CURR/$i&
+	done
+
+	#jobs
+
+	nj=`jobs | wc -l | tr -d " "`
+
+	while [[ $nj != "0" ]]
+	do
+		echo $nj
+		nj=`jobs | wc -l | tr -d " "`
+	done
+
+
+
+	#wait
+
+	end_time=$(date +%s)
+
+	elapsed=$(( end_time - start_time ))
+	echo $elapsed seconds for batch $CURR
+
+
+	CURR=$((CURR+1))
+done

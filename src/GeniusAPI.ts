@@ -1,7 +1,7 @@
 //import axios from "axios";
 import {parse} from "fast-html-parser";
 import https from "https";
-//import fetch from "node-fetch";
+import fetch from "node-fetch";
 
 const PROTO = "https";
 
@@ -9,7 +9,8 @@ const PROTO = "https";
 
 async function redirFetch(url: string){
 	//return await axios.get(url);
-	return await fetch(url);	
+	//return await fetch(url, {agent: null});
+	return await fetch(url);
 }
 
 export async function downloadAnnotation(id: number, retry=5): Promise<[any, any, any]>{
@@ -46,17 +47,19 @@ export async function downloadAnnotation(id: number, retry=5): Promise<[any, any
 export async function downloadSong(id: number, retry=5): Promise<string> | null{
 	if(retry == 0) return null;
 
-	const controller = new AbortController();
-	const timeoutId = setTimeout(() => controller.abort(), 30000);
-
-	const res = await redirFetch(`${PROTO}://genius.com/songs/${id}`) || {ok: false, status: 404};
+	const res = await redirFetch(`${PROTO}://genius.com/songs/${id}`);// || {ok: false, status: 404};
+	//console.log(await res.text());
+	const text = await res.text();
 	if(!res.ok){
 		if(res.status == 404){
-			return null;
+			return "404";
+		}
+		if(text.includes("im_under_attack")){
+			return "500";
 		}
 		return await downloadSong(id, retry - 1);
 	}
 	//@ts-ignore
-	return await res.text();
-	//return res.text;
+	//return await res.text();
+	return text;
 }

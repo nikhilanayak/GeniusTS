@@ -1,6 +1,7 @@
-import {Song} from "./Types";
+import {Song} from "./Types.js";
 import {parse} from "fast-html-parser";
-import { downloadAnnotation } from "./GeniusAPI";
+import { downloadAnnotation } from "./GeniusAPI.js";
+
 
 
 function mapKVArray(list: Record<string, string>[]): Record<string, string>{
@@ -74,7 +75,6 @@ export async function parseHTML(pageText: string): Promise<Record<string, any>>{
 	const verifieds = preloadedData?.entities?.referents;
 
 	const annotations = await Promise.all(annotationIDs.map(async i => {
-
 		const [highlightedText, annotation] = await downloadAnnotation(i);
 		const status = verifieds?.[i]?.classification;
 
@@ -85,7 +85,9 @@ export async function parseHTML(pageText: string): Promise<Record<string, any>>{
 		};
 	}));
 
-	const out = {
+	const out = {...preloadedData, ...{"annotations": annotations}};
+
+	/*const out = {
 		lyrics,
 		tags,
 		title,
@@ -98,7 +100,7 @@ export async function parseHTML(pageText: string): Promise<Record<string, any>>{
 		pageViews,
 		explicit,
 		annotations
-	};
+	};*/
 
 	return out;
 }

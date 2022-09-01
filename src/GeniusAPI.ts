@@ -1,33 +1,62 @@
-//import axios from "axios";
-import {parse} from "fast-html-parser";
+import { parse } from "fast-html-parser";
+import { existsSync, readFileSync } from "fs";
 import https from "https";
 import fetch from "node-fetch";
+import { AbortController } from "node-abort-controller";
 
 const PROTO = "https";
 
-//const axiosArgs = {};
+export const DEBUG_INFO = {
+	DEBUG: false,
+	ingress: 0,
+	cache: true
+};
 
-async function redirFetch(url: string){
-	//return await axios.get(url);
-	//return await fetch(url, {agent: null});
-	return await fetch(url);
+function trackIngress(text: string){
+	DEBUG_INFO.ingress += Buffer.byteLength(text, "utf-8");
 }
 
-export async function downloadAnnotation(id: number, retry=5): Promise<[any, any, any]>{
-	if(retry == 0) return null;
+process.on("exit", () => {
+	if(DEBUG_INFO.DEBUG){
+		console.error("DEBUG: " + `INGRESS: ${DEBUG_INFO.ingress} bytes`);
+		console.error("DEBUG: " + `UPTIME: ${process.uptime()}`);
+	}
+});
 
-	const res = await redirFetch(`${PROTO}://genius.com/${id}`);
 
-	if(!res.ok){
-		if(res.status == 404){
+
+async function myFetch(url: string) {
+	const TIMEOUT_SEC = 30;
+
+	const controller = new AbortController();
+	const timeout = setTimeout(() => controller.abort, TIMEOUT_SEC * 1000);
+	try{
+		return await fetch(url, { signal: controller.signal });
+	}
+	catch(err){
+		return {
+			ok: false,
+			status: 999, // not 404 but also not 500
+			text: async () => ""
+		}
+	}
+}
+
+export async function downloadAnnotation(id: number, retry = 5): Promise<[string, string]> {
+	if (retry == 0) return null;
+
+	const res = await myFetch(`${PROTO}://genius.com/${id}`);
+
+	if (!res.ok) {
+		if (res.status == 404) {
 			return null;
 		}
 		return await downloadAnnotation(id, retry - 1);
 	}
 
-	//@ts-ignore
-	//const data = res.data;//await res.text();
 	const data = await res.text();
+
+	DEBUG_INFO.DEBUG && trackIngress(data);
 
 	const page = parse(data);
 
@@ -36,25 +65,27 @@ export async function downloadAnnotation(id: number, retry=5): Promise<[any, any
 	const referent = metas.filter(i => i.attributes.property == "rap_genius:referent")?.[0]?.attributes?.content;
 	const description = metas.filter(i => i.attributes.property == "og:description")?.[0]?.attributes?.content;
 
-	const unreviewed = false;
 
-	return [referent, description, unreviewed];
+	return [referent, description];
 
 
 
 }
 
-export async function downloadSong(id: number, retry=5): Promise<string> | null{
-	if(retry == 0) return null;
+export async function downloadSong(id: number, retry = 5): Promise<string> | null {
+	if (retry == 0) return null;
 
-	const res = await redirFetch(`${PROTO}://genius.com/songs/${id}`);// || {ok: false, status: 404};
+	const res = await myFetch(`${PROTO}://genius.com/songs/${id}`);// || {ok: false, status: 404};
 	//console.log(await res.text());
 	const text = await res.text();
-	if(!res.ok){
-		if(res.status == 404){
+
+	DEBUG_INFO.DEBUG && trackIngress(text);
+
+	if (!res.ok) {
+		if (res.status == 404) {
 			return "404";
 		}
-		if(text.includes("im_under_attack")){
+		if (text.includes("im_under_attack") || text.includes("cloudflare_error.ip_block")) {
 			return "500";
 		}
 		return await downloadSong(id, retry - 1);

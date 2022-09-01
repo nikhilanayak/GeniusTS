@@ -1,42 +1,37 @@
-import {parseHTML} from "./GeniusParser";
-import {downloadSong} from "./GeniusAPI";
-import {parse} from "acorn";
+import { parseHTML } from "./GeniusParser.js";
+import { downloadSong, DEBUG_INFO } from "./GeniusAPI.js";
+import zlib from "zlib";
 
-const id = parseInt(process.argv[2]);
-console.log(id);
+async function run(id: number){
+    DEBUG_INFO.DEBUG = false;
 
-const song = await downloadSong(id);
+    //const id = parseInt(process.argv[2]);
+    //console.log(id);
+    const song = await downloadSong(id);
 
-/*
-const JSON_PREFIX = "window.__PRELOADED_STATE__ =";
-let json_line = "";
-song.split("\n").every(line => {
-		line = line.trim();
-		//console.log(line);
-		if(line.startsWith(JSON_PREFIX)){
-			line = line.slice(JSON_PREFIX.length, line.length);
-			//line = "return " + line;
 
-			json_line = line;
+    if (song == "404" || song == "500") {
+        //errExit();
+        return "err";
+    }
 
-			//preloadedData = (new Function(line))();
-			return false;
-		}
-		return true;
-	});
-*/
 
-const data = await parseHTML(song);
+    const data = await parseHTML(song);
 
-console.log(JSON.stringify(data));
+    //console.log(JSON.stringify(data));
+    return data;
 
-//console.log(json_line);
+    //console.log(JSON.stringify(data));
 
-//const res = parse(json_line, {ecmaVersion: 2020});
+    //console.log(json_line);
 
-//console.log(Object.keys(res));
-//console.log(json_line);
+    //const res = parse(json_line, {ecmaVersion: 2020});
+
+    //console.log(Object.keys(res));
+    //console.log(json_line);
 
 
 
-process.exit(0);
+    //process.exit(0);
+}
+export default run;

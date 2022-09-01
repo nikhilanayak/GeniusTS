@@ -85,7 +85,7 @@ export async function downloadSong(id: number, retry = 5): Promise<string> | nul
 		if (res.status == 404) {
 			return "404";
 		}
-		if (text.includes("im_under_attack") || text.includes("cloudflare_error.ip_block")) {
+		if (text.includes("im_under_attack") || text.includes("cloudflare_error.ip_block") || text.includes("cloudflare_error.challenge")) {
 			return "500";
 		}
 		return await downloadSong(id, retry - 1);

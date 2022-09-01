@@ -2,3 +2,5 @@ node_modules
 dist
 py
 data
+fn_app
+isolate*

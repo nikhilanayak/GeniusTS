@@ -6,9 +6,9 @@ export default {
         topLevelAwait: true
     },
     stats: "errors-only",
-    output: {
+    /*output: {
         libraryTarget: "umd",
         umdNamedDefine: true,
         library: "scraper"
-    }
+    }*/
 }

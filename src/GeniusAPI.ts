@@ -90,7 +90,5 @@ export async function downloadSong(id: number, retry = 5): Promise<string> | nul
 		}
 		return await downloadSong(id, retry - 1);
 	}
-	//@ts-ignore
-	//return await res.text();
 	return text;
 }

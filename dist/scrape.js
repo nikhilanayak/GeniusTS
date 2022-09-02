@@ -3,6 +3,7 @@ import { downloadSong, DEBUG_INFO } from "./GeniusAPI.js";
 import zlib from "zlib";
 import util from "util";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
+import { execSync } from "child_process";
 const BUCKET_SIZE = 4096;
 const deflate = util.promisify(zlib.deflate);
 DEBUG_INFO.DEBUG = false;
@@ -18,17 +19,19 @@ async function write(id, text) {
         catch (err) {
         }
     }
-    //const compressed = await deflate(text);
     const compressed = text;
     writeFileSync(path, compressed);
 }
 const song = await downloadSong(id);
-if (song == "404" || song == "500") {
-    //await write(id, "");
-    await write(id, "CF_ERR");
-    //errExit();
+console.log();
+console.log(song);
+console.log();
+if (song == "500") {
+    execSync("./event_handler.sh CLOUDFLARE_ERR");
+}
+if (song == "404") {
+    //await write(id, "CF_ERR");
     process.exit(0);
-    //"err";
 }
 else {
     const data = await parseHTML(song);

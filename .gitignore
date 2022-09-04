@@ -3,3 +3,4 @@ py
 data/*
 fn_app
 isolate*
+creds.json

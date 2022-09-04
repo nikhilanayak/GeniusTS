@@ -55,15 +55,25 @@ export async function parseHTML(pageText) {
     const annotationIDs = preloadedData?.songPage?.lyricsData?.referents;
     const verifieds = preloadedData?.entities?.referents;
     const annotations = await Promise.all(annotationIDs.map(async (i) => {
-        const [highlightedText, annotation] = await downloadAnnotation(i);
+        const anns = await downloadAnnotation(i);
+        if (anns == null) {
+            return {
+                "err": 404,
+                "id": i
+            };
+        }
+        //console.error("anns ", anns);
+        const [highlightedText, annotation] = anns;
         const status = verifieds?.[i]?.classification;
         return {
             "text": highlightedText,
             "annotation": annotation,
-            "status": status
+            "status": status,
+            "id": i
         };
     }));
-    const out = { ...preloadedData, ...{ "annotations": annotations } };
+    preloadedData["annotations"] = annotations;
+    //const out = {...preloadedData, ...{"annotations": annotations}};
     /*const out = {
         lyrics,
         tags,
@@ -78,5 +88,5 @@ export async function parseHTML(pageText) {
         explicit,
         annotations
     };*/
-    return out;
+    return preloadedData;
 }

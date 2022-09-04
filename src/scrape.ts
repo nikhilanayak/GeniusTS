@@ -14,34 +14,34 @@ const id = parseInt(process.argv[2]);
 
 
 async function write(id: number, text: string) {
-    //const path = `/mnt/c/Users/Nikhi/Desktop/Programming/GeniusTS/data/${id}.json`;
+    /*//const path = `/mnt/c/Users/Nikhi/Desktop/Programming/GeniusTS/data/${id}.json`;
     const bucket = Math.floor(id / BUCKET_SIZE);
     const path = `data/${bucket}/${id}.json`;
 
-    if(!existsSync(`data/${bucket}`)){
-        try{
+    if (!existsSync(`data/${bucket}`)) {
+        try {
             mkdirSync(`data/${bucket}`);
         }
-        catch(err){
+        catch (err) {
 
         }
     }
     const compressed = text;
-    writeFileSync(path, compressed);
+    //writeFileSync(path, compressed);*/
+    //console.log(text);
+    writeFileSync(`/dev/shm/data/${id}.json`, text);
 }
 
 const song = await downloadSong(id);
-console.log();
-console.log(song);
-console.log();
-
-if(song == "500"){
-    execSync("./event_handler.sh CLOUDFLARE_ERR");
+if (song == "500") {
+    await write(id, "500");
+    await write(id, JSON.stringify({ "err": "500", "id": id}));
     process.exit(0);
 }
 
-if (song == "404") {
+else if (song == "404") {
     //await write(id, "CF_ERR");
+    await write(id, JSON.stringify({ "err": "404", "id": id}));
     process.exit(0);
 }
 

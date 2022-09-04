@@ -5,3 +5,4 @@ fn_app
 isolate*
 creds.json
 dist/*
+ssh-key*

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-ssh -i C:/Users/Nikhi/Downloads/ssh-key-2022-09-04.key opc@129.146.240.207 "curl https://raw.githubusercontent.com/nikhilanayak/GeniusTS/main/bootstrap.sh | bash -"
+ssh -i ssh-key-2022-09-04.key ubuntu@152.70.135.84 -L 3030:localhost:3030 "curl https://raw.githubusercontent.com/nikhilanayak/GeniusTS/main/bootstrap.sh | bash -"

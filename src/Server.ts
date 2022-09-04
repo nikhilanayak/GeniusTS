@@ -1,7 +1,6 @@
 import { exec, execSync } from "child_process";
 import express from "express";
 import { readdirSync, readFileSync, rmSync } from "fs";
-import { clearInterval } from "timers";
 
 const app = express();
 
@@ -10,12 +9,17 @@ const JOBS = 1024;
 
 function popFile(id: number) {
     const fName = `/dev/shm/data/${id}.json`;
-    const text = readFileSync(fName);
+    try{
+        const text = readFileSync(fName);
+        return text.toString();
+    }
+    catch(err){
+
+    }
     try {
         rmSync(fName);
     }
     catch (err) { }
-    return text.toString();
 }
 
 app.get("/ping", (req, res) => {
@@ -44,6 +48,7 @@ app.get("/:start/:end", (req, res) => {
         for (let i = start; i <= end; i++) {
             const text = popFile(i);
             res.write(text);
+            res.write("\n");
         }
         res.end();
 

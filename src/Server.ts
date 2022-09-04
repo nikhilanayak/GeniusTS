@@ -11,15 +11,15 @@ function popFile(id: number) {
     const fName = `/dev/shm/data/${id}.json`;
     try{
         const text = readFileSync(fName);
+        try{
+            rmSync(fName);
+        }
+        catch(err){}
         return text.toString();
     }
     catch(err){
         return "";
     }
-    try {
-        rmSync(fName);
-    }
-    catch (err) { }
 }
 
 app.get("/ping", (req, res) => {

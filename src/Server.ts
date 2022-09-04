@@ -14,7 +14,7 @@ function popFile(id: number) {
         return text.toString();
     }
     catch(err){
-
+        return "";
     }
     try {
         rmSync(fName);

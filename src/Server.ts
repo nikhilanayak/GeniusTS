@@ -4,7 +4,7 @@ import { readdirSync, readFileSync, rmSync } from "fs";
 
 const app = express();
 
-const JOBS = 1024;
+const JOBS = 32;
 
 
 function popFile(id: number) {

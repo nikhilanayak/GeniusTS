@@ -4,3 +4,4 @@ data/*
 fn_app
 isolate*
 creds.json
+dist/*

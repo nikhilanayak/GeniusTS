@@ -3,8 +3,8 @@
 git clone https://github.com/nikhilanayak/GeniusTS.git GeniusTS
 cd GeniusTS
 
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - > /dev/null 2>> err.log
-sudo apt-get install -y nodejs > /dev/null 2>> err.log
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs > /dev/null
 parallel --version > /dev/null || sudo apt install parallel
 
 npm install
@@ -13,5 +13,4 @@ npx tsc
 npx webpack
 mv dist/main.js dist/main.cjs
 
-node dist/Server.js&
-disown
+node dist/Server.js

@@ -1,6 +1,3 @@
 #!/bin/bash
 
-create_tpu() {
-    gcloud alpha compute tpus tpu-vm create --zone=us-central1-f scraper --accelerator-type=v2-8 --version=v2-alpha --project=axial-silicon-315619
-}
-
+ssh -i C:/Users/Nikhi/Downloads/ssh-key-2022-09-04.key opc@129.146.240.207 "curl https://raw.githubusercontent.com/nikhilanayak/GeniusTS/main/bootstrap.sh | bash -"

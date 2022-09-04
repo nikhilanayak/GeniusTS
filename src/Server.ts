@@ -49,20 +49,7 @@ app.get("/:start/:end", (req, res) => {
 
     });
 
-    req.on("close", () => {
-        console.log("\nrequest cancelled");
-        clearInterval(interval);
-        proc.kill("SIGINT");
-        proc.kill("SIGINT");
 
-        for(let i = start; i <= end; i++){
-            try{
-                const fName = `/dev/shm/data/${i}.json`;
-                rmSync(fName);
-            }
-            catch(err){}
-        }
-    });
 
 });
 
